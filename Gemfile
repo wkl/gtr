@@ -40,3 +40,8 @@ gem 'spring',        group: :development
 
 gem "slim-rails"
 gem 'bootstrap-sass', '~> 3.1.1'
+
+gem "geoip", "~> 1.3.5"
+
+# GeoIP2 (without ASN)
+# gem 'geoip2', github: 'da4nik/geoip2'
