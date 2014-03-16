@@ -45,3 +45,5 @@ gem "geoip", "~> 1.3.5"
 
 # GeoIP2 (without ASN)
 # gem 'geoip2', github: 'da4nik/geoip2'
+
+gem "active_link_to"
