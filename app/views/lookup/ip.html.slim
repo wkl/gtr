@@ -4,15 +4,14 @@ p
     = label_tag(:ip, "IPv4 address")
     = text_field_tag(:ip, @ip)
     = submit_tag("Lookup")
-  end
 
 - unless @msg.nil?
     div class="alert alert-warning alert-dismissable"
       button type="button" class="close" data-dismiss="alert" aria-hidden="true" &times;
-      =@msg
+      = @msg
 
 p
-  =@city.city_name unless @city.nil?
+  = @city unless @city.nil?
 
 p
-  =@asn.number unless @asn.nil?
+  = @asn unless @asn.nil?

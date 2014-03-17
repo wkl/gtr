@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   
   root 'lookup#index'
+  post '/' => 'lookup#index'
   get 'ip/' => 'lookup#ip'
   post 'ip/' => 'lookup#ip'
 

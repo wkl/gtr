@@ -1,4 +1,5 @@
 class LookupController < ApplicationController
+  include Ipv4
   def ip
     if params[:ip]
       begin
@@ -12,5 +13,9 @@ class LookupController < ApplicationController
   end
 
   def index
+    if request.post? && params[:paste]
+      @paste = params[:paste]
+      @gtr_list = plain_to_list(@paste)
+    end
   end
 end
