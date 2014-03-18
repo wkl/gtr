@@ -38,12 +38,13 @@ gem 'spring',        group: :development
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-gem "slim-rails"
+gem 'slim-rails'
 gem 'bootstrap-sass', '~> 3.1.1'
 
-gem "geoip", "~> 1.3.5"
+gem 'geoip', '~> 1.3.5'
+gem 'gmaps4rails'
 
 # GeoIP2 (without ASN)
 # gem 'geoip2', github: 'da4nik/geoip2'
 
-gem "active_link_to"
+gem 'active_link_to'

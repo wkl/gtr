@@ -20,7 +20,7 @@ module Ipv4
         geo = GEO.city(ip)
         asn = ASN.asn(ip)
       rescue
-        return nil
+        return []
       end
       gtr_list << {
         :id => id,

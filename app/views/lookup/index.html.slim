@@ -1,6 +1,6 @@
 - content_for :js do
-  = javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=AIzaSyCeAMC0llHnCIdI9YLNKrP6Y2yWCyKiCAM&sensor=false"
-
+  = javascript_include_tag "//maps.googleapis.com/maps/api/js?key=AIzaSyCeAMC0llHnCIdI9YLNKrP6Y2yWCyKiCAM&sensor=false&v=3.13&libraries=geometry"
+  = javascript_include_tag "//google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.0.14/src/markerclusterer_packed.js"
 
 h1 Global Visual Traceroute
 div class="row"
@@ -28,3 +28,21 @@ div class="row"
               td = gtr[:ip]
               td = gtr[:cc]
               td = gtr[:asn]
+
+javascript:
+  var hash_json = #{raw @hash.to_json}
+  /*
+  var handler = Gmaps.build('Google', {
+      markers: {
+        clusterer: false,
+      }
+  });
+  handler.buildMap({
+    internal: {id: 'map-canvas'}
+  },
+  function(){
+    var markers = handler.addMarkers(hash_json);
+    handler.bounds.extendWith(markers);
+    handler.fitMapToBounds();
+  }); 
+  */
