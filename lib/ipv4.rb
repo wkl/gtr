@@ -25,8 +25,8 @@ module Ipv4
       gtr_list << {
         :id => id,
         :ip => ip,
-        :asn => asn.number,
-        :as => asn.asn,
+        :asn => asn.nil? ? 'n/a' : asn.number,
+        :as => asn.nil? ? 'n/a' : asn.asn,
         :cc => geo.country_code2,
         :lat => geo.latitude,
         :lng => geo.longitude,

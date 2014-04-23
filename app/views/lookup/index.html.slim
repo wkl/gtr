@@ -20,7 +20,7 @@ div class="row"
 
   div class="col-md-4 right"
     div
-      - if @gtr_list.any?
+      - if !@gtr_list.nil? && @gtr_list.any?
         table class="table table-condensed table-hover"
           - for gtr in @gtr_list
             tr

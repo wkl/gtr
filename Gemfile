@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.1.0.rc1'
+gem 'rails', '4.1.0'
 # Use postgresql as the database for Active Record
 gem 'pg'
 # Use SCSS for stylesheets
@@ -41,7 +41,7 @@ gem 'spring',        group: :development
 gem 'slim-rails'
 gem 'bootstrap-sass', '~> 3.1.1'
 
-gem 'geoip', '~> 1.3.5'
+gem 'geoip', '~> 1.4.0'
 gem 'gmaps4rails'
 
 # GeoIP2 (without ASN)
