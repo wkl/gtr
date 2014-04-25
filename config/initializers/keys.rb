@@ -1,0 +1,2 @@
+RIPE_CREATE_KEY = ''
+RIPE_FETCH_KEY = ''

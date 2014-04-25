@@ -52,3 +52,4 @@ gem 'active_link_to'
 gem 'httparty'
 gem 'dalli'
 gem 'quiet_assets', :group => :development
+gem 'daemons'

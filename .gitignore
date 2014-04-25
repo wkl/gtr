@@ -18,6 +18,8 @@ rerun.txt
 pickle-email-*.html
 .project
 config/initializers/secret_token.rb
+.rake_tasks
 
 # maxmind geoip db
 /data/*
+config/initializers/keys.rb

@@ -48,9 +48,64 @@ module Ripe
         end
       end
 
-      probes
+      return probes
     end
 
+    # submit traceroute measurement, should return msm_id
+    # otherwise raise Exception
+    def submit(probe, dest)
+      body = {
+        'definitions' => [
+          {
+            'target' => dest,
+            'description' => 'GTR',
+            'type' => 'traceroute',
+            'af' => 4,
+            'is_oneoff' => true,
+            'is_public' => false,
+            'protocol' => 'ICMP',
+            'resolve_on_probe' => true,
+            'packets' => 1,
+          },
+        ],
+        'probes' => [
+          {
+            'requested' => 1,
+            'type' => 'probes',
+            'value' => "#{probe}",
+          }
+        ],
+      }
+
+      @options = {
+        :body => JSON.generate(body),
+        :query => {
+          :key => RIPE_CREATE_KEY,
+        },
+        :headers => {
+          'Accept' => 'application/json',
+          'Content-Type' => 'application/json',
+        }
+      }
+      resp = self.class.post('/measurement/', @options)
+      puts resp.code unless resp.code == 202
+      raise resp.body unless resp.code == 202
+
+      return JSON.parse(resp.body)['measurements'].first
+    end
+
+    def fetch_result(msm_id)
+      @options = {
+        :query => {
+          :key => RIPE_FETCH_KEY,
+        },
+      }
+      resp = self.class.get("/measurement/#{msm_id}/result/", @options)
+      puts resp
+      raise resp.body if resp.code != 200
+
+      return JSON.parse(resp.body)
+    end
   end
 end
 
@@ -58,5 +113,5 @@ include Ripe
 
 if __FILE__ == $0
   api = API.new
-  api.fetch_probes
+  api.submit(207, 'g.cn')
 end

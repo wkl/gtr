@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140424070446) do
+ActiveRecord::Schema.define(version: 20140425074829) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,8 +39,12 @@ ActiveRecord::Schema.define(version: 20140424070446) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "probe",      limit: 10
+    t.integer  "msm_id"
   end
 
+  add_index "traceroutes", ["available"], name: "index_traceroutes_on_available", using: :btree
+  add_index "traceroutes", ["failed"], name: "index_traceroutes_on_failed", using: :btree
+  add_index "traceroutes", ["submitted"], name: "index_traceroutes_on_submitted", using: :btree
   add_index "traceroutes", ["uuid"], name: "index_traceroutes_on_uuid", unique: true, using: :btree
 
 end
