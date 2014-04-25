@@ -19,8 +19,25 @@ div class="row"
         span style="float: right" = @paste_msg
 
   div class="col-md-4 right"
-    div
-      - if !@gtr_list.nil? && @gtr_list.any?
+    - unless @probes_options.nil?
+      div
+        = form_tag(root_path) do
+          div class=["form-group"]
+            = label_tag :probe, 'Source'
+            = select_tag :probe, options_for_select(@probes_options)
+          div class=["form-group"]
+            = label_tag :dst, 'Destination'
+            = text_field_tag :dst, nil, class: 'form-control', placeholder: 'IP / Hostname'
+          = submit_tag('Submit', :class => 'btn btn-default')
+
+    - unless @tr.nil?
+      div
+        | Save 
+        a href="/traceroute/#{@tr.uuid}/" this link 
+        | to check the result in the future.
+          
+    - if !@gtr_list.nil? && @gtr_list.any?
+      div
         table class="table table-condensed table-hover"
           - for gtr in @gtr_list
             tr
@@ -28,6 +45,10 @@ div class="row"
               td = gtr[:ip]
               td = gtr[:cc]
               td = gtr[:asn]
+
+- unless @alert_msg.nil?
+  javascript:
+    alert('#{@alert_msg}')
 
 javascript:
   var hash_json = #{raw @hash.to_json}

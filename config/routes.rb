@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   post '/' => 'lookup#index'
   get 'ip/' => 'lookup#ip'
   post 'ip/' => 'lookup#ip'
+  get '/traceroute/:uuid' => 'lookup#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -34,6 +34,8 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+  config.cache_store = :dalli_store, '127.0.0.1',
+  { :namespace => 'GTR', :expires_in => 1.day, :compress => true }
 end
 
 Slim::Engine.set_default_options pretty: true, sort_attrs: false

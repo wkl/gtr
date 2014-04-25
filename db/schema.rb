@@ -11,9 +11,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20140424070446) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "hops", force: true do |t|
+    t.integer  "traceroute_id"
+    t.integer  "no"
+    t.string   "from",          limit: 40
+    t.float    "rtt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "hops", ["traceroute_id"], name: "index_hops_on_traceroute_id", using: :btree
+
+  create_table "traceroutes", force: true do |t|
+    t.string   "uuid",       limit: 40
+    t.string   "src",        limit: 40
+    t.string   "dst",        limit: 40
+    t.string   "dst_addr",   limit: 40
+    t.boolean  "submitted"
+    t.boolean  "available"
+    t.boolean  "failed"
+    t.datetime "endtime"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "probe",      limit: 10
+  end
+
+  add_index "traceroutes", ["uuid"], name: "index_traceroutes_on_uuid", unique: true, using: :btree
 
 end

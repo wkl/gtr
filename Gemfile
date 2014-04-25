@@ -48,3 +48,7 @@ gem 'gmaps4rails'
 # gem 'geoip2', github: 'da4nik/geoip2'
 
 gem 'active_link_to'
+
+gem 'httparty'
+gem 'dalli'
+gem 'quiet_assets', :group => :development

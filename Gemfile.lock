@@ -40,11 +40,15 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.7.0)
+    dalli (2.7.0)
     erubis (2.7.0)
     execjs (2.0.2)
     geoip (1.4.0)
     gmaps4rails (2.1.2)
     hike (1.2.3)
+    httparty (0.13.1)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
     i18n (0.6.9)
     jbuilder (2.0.6)
       activesupport (>= 3.0.0, < 5)
@@ -59,8 +63,11 @@ GEM
     mime-types (1.25.1)
     minitest (5.3.3)
     multi_json (1.9.2)
+    multi_xml (0.5.5)
     pg (0.17.1)
     polyglot (0.3.4)
+    quiet_assets (1.0.2)
+      railties (>= 3.1, < 5.0)
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -131,11 +138,14 @@ DEPENDENCIES
   active_link_to
   bootstrap-sass (~> 3.1.1)
   coffee-rails (~> 4.0.0)
+  dalli
   geoip (~> 1.4.0)
   gmaps4rails
+  httparty
   jbuilder (~> 2.0)
   jquery-rails
   pg
+  quiet_assets
   rails (= 4.1.0)
   sass-rails (~> 4.0.1)
   sdoc (~> 0.4.0)

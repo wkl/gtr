@@ -1,5 +1,7 @@
 class LookupController < ApplicationController
   include Ipv4
+  include Ripe
+
   def ip
     if params[:ip]
       begin
@@ -29,6 +31,38 @@ class LookupController < ApplicationController
           "height" => 34,
         })
       end
+
+      return
+    end
+
+    if request.post? && params[:dst]
+      # limit the requests per minute by IP address
+      count = Rails.cache.increment(request.remote_ip, 1, :expires_in => 600)
+      puts count
+      if count > REQS_LIMIT
+        @alert_msg = "You submit too frequently. Please try later."
+        return
+      end
+          
+      @tr = Traceroute.create_new(params[:probe], params[:dst])
+      redirect_to "/traceroute/#{@tr.uuid}/"
+      return
+    end
+
+    if params[:uuid]
+      @tr = Traceroute.find_by(uuid: params[:uuid])
+      return
+    end
+
+    probes = Rails.cache.fetch(:probes, :expires_in => 1800) do
+      api = API.new
+      api.fetch_probes()
+    end
+
+    # options for select form
+    @probes_options = Hash.new
+    probes.each do |p|
+      @probes_options[p['name']] = p['id']
     end
   end
 end

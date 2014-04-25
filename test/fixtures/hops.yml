@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  traceroute_id: 
+  'no': 1
+  from: MyString
+  rtt: 1.5
+
+two:
+  traceroute_id: 
+  'no': 1
+  from: MyString
+  rtt: 1.5
