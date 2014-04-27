@@ -24,6 +24,8 @@ module Ipv4
         :cc => '',
         :lat => 'n/a',
         :lng => 'n/a',
+        :city => '',
+        :region => '',
         :info => 'n/a',
       }
     end
@@ -40,6 +42,8 @@ module Ipv4
       :cc => geo.nil? ? 'n/a' : geo.country_code2,
       :lat => geo.nil? ? 'n/a' : geo.latitude,
       :lng => geo.nil? ? 'n/a' : geo.longitude,
+      :city => geo.nil? ? 'n/a' : geo.city_name,
+      :region => geo.nil? ? 'n/a' : geo.region_name,
       :info => '',
     }
     unless geo.nil?
@@ -66,6 +70,49 @@ module Ipv4
     end
 
     return gtr_list
+  end
+
+  def skipfy(gtr_list)
+    new_list = Array.new
+    gtr_list.each do |hop|
+      new_list << hop.clone
+    end
+
+    i = 0;
+    while (i < new_list.length)
+      curr = new_list[i]
+      if (curr[:lat] != 'n/a' && curr[:city] == '' && curr[:region] == '')
+        j = i - 1;
+        # find if there are other "accurate" hops in that country
+        while (j >= 0 && (new_list[j][:ip] == '*' || new_list[j][:cc] == curr[:cc]))
+          if (new_list[j][:city] != '' || new_list[j][:region] != '')
+            if (new_list[j][:lat] != 'n/a')
+              curr[:lat] = 'n/a'
+              curr[:lng] = 'n/a'
+              break
+            end
+          end
+          j -= 1
+        end
+
+        next if curr[:lat] == 'n/a'
+
+        j = i + 1;
+        while (j < new_list.length && (new_list[j][:ip] == '*' ||  new_list[j][:cc] == curr[:cc]))
+          if (new_list[j][:city] != '' || new_list[j][:region] != '')
+            if (new_list[j][:lat] != 'n/a')
+              curr[:lat] = 'n/a'
+              curr[:lng] = 'n/a'
+              break
+            end
+          end
+          j += 1
+        end
+      end
+      i += 1
+    end
+
+    return new_list
   end
 end
 

@@ -57,6 +57,7 @@ var dash = [{
 }]
 
 var colorMode = 0;
+var skipMode = 0;
 function ColorControl(controlDiv, map) {
 
   controlDiv.style.padding = '5px';
@@ -83,7 +84,41 @@ function ColorControl(controlDiv, map) {
   // Setup the click event listeners
   google.maps.event.addDomListener(controlUI, 'click', function() {
     colorMode = (colorMode + 1) % 3;
-    drawAll(colorMode);
+    drawAll(colorMode, false);
+  });
+}
+
+function SkipControl(controlDiv, map) {
+
+  controlDiv.style.padding = '5px';
+
+  // Set CSS for the control border
+  var controlUI = document.createElement('div');
+  controlUI.style.backgroundColor = 'white';
+  controlUI.style.borderStyle = 'solid';
+  controlUI.style.borderWidth = '2px';
+  controlUI.style.cursor = 'pointer';
+  controlUI.style.textAlign = 'center';
+  controlUI.title = 'Click to skip inaccurate hops';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior
+  var controlText = document.createElement('div');
+  controlText.style.fontFamily = 'Arial,sans-serif';
+  controlText.style.fontSize = '12px';
+  controlText.style.paddingLeft = '4px';
+  controlText.style.paddingRight = '4px';
+  controlText.innerHTML = '<b>ToggleSkip</b>';
+  controlUI.appendChild(controlText);
+
+  // Setup the click event listeners
+  google.maps.event.addDomListener(controlUI, 'click', function() {
+    skipMode = 1 - skipMode;
+    if (skipMode == 1)
+      gtr_list = gtr_list_skip;
+    else
+      gtr_list = gtr_list_org;
+    drawAll(colorMode, true);
   });
 }
 
@@ -161,15 +196,22 @@ function drawLine(hop1, hop2, colorMode, gap) {
 // colorMode 0: normal
 //           1: relative
 //           2: absolute
-function drawAll(colorMode) {
+function drawAll(colorMode, removeMarker) {
   if (gtr_list.length == 0)
     return;
 
-  // remove all existing lines
+  // remove all existing lines & markers
   lines.forEach(function(line, index, array) {
     line.setMap(null);
   });
   lines.length = 0;
+
+  if (removeMarker) {
+    markers.forEach(function(marker, index, array) {
+      marker.setMap(null);
+    });
+    markers.length = 0;
+  }
 
   var last;
   var i;
@@ -218,7 +260,7 @@ function initialize() {
   map = new google.maps.Map(document.getElementById('map-canvas'),
       mapOptions);
 
-  drawAll(colorMode);
+  drawAll(colorMode, false);
 
   var allPath = [];
   gtr_list.forEach(function(hop, index, array) {
@@ -231,7 +273,13 @@ function initialize() {
   var colorControl = new ColorControl(colorControlDiv, map);
 
   colorControlDiv.index = 1;
+
+  var skipControlDiv = document.createElement('div');
+  var skipControl = new SkipControl(skipControlDiv, map);
+
+  skipControlDiv.index = 1;
   map.controls[google.maps.ControlPosition.TOP_RIGHT].push(colorControlDiv);
+  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(skipControlDiv);
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);

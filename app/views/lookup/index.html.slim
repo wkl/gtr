@@ -66,7 +66,9 @@ div class="row"
     alert('#{@alert_msg}')
 
 javascript:
-  var gtr_list = #{raw @gtr_list.to_json};
+  var gtr_list_org = #{raw @gtr_list.to_json};
+  var gtr_list_skip = #{raw @gtr_list_skip.to_json};
+  var gtr_list = gtr_list_org;
   var avail;
 
 - unless @tr.nil?
