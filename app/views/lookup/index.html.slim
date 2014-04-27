@@ -1,24 +1,23 @@
 - content_for :js do
-  = javascript_include_tag "//maps.googleapis.com/maps/api/js?key=AIzaSyCeAMC0llHnCIdI9YLNKrP6Y2yWCyKiCAM&sensor=false&v=3.13&libraries=geometry"
-  = javascript_include_tag "//google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.0.14/src/markerclusterer_packed.js"
+  = javascript_include_tag "//maps.googleapis.com/maps/api/js?key=AIzaSyCeAMC0llHnCIdI9YLNKrP6Y2yWCyKiCAM&sensor=false"
 
 h1 Global Visual Traceroute
 div class="row"
-  div class="col-md-8 left"
+  div class="col-md-9 left"
     div id="map-canvas"
     hr
     div
       = form_tag(root_path) do
         div class=["form-group", ("has-error has-feedback" unless @paste_msg.nil?)]
           = label_tag :paste, 'Paste your Traceroute output'
-          = text_area_tag :paste, @paste, rows: 3, class: 'form-control'
+          = text_area_tag :paste, @paste, rows: 2, class: 'form-control'
           - unless @paste_msg.nil?
             span class="glyphicon glyphicon-remove form-control-feedback"
         = submit_tag('Draw', :class => 'btn btn-default')
         button type="button" class="btn btn-link" id="paste-reset" Clear
         span style="float: right" = @paste_msg
 
-  div class="col-md-4 right"
+  div class="col-md-3 right"
     - unless @probes_options.nil?
       div
         = form_tag(root_path) do
@@ -31,10 +30,25 @@ div class="row"
           = submit_tag('Submit', :class => 'btn btn-default')
 
     - unless @tr.nil?
-      div
-        | Save 
-        a href="/traceroute/#{@tr.uuid}/" this link 
-        | to check the result in the future.
+
+      div id="result"
+        - if @tr.failed
+          p 
+            | Traceroute failed, please check your destination and re-submit.
+        - else
+          div
+            | Save this 
+            a href="/traceroute/#{@tr.uuid}/"
+              | Permanent link 
+
+          - if @tr.available
+            p 
+              | Src: #{@tr.src}
+              br
+              | Dst: #{@tr.dst} (#{@tr.dst_addr})
+
+        div id="load" style="display: none"
+          = image_tag('spinner.gif', id: "loading")
           
     - if !@gtr_list.nil? && @gtr_list.any?
       div
@@ -45,25 +59,18 @@ div class="row"
               td = gtr[:ip]
               td = gtr[:cc]
               td = gtr[:asn]
+              td = gtr[:rtt]
 
 - unless @alert_msg.nil?
   javascript:
     alert('#{@alert_msg}')
 
 javascript:
-  var hash_json = #{raw @hash.to_json}
-  /*
-  var handler = Gmaps.build('Google', {
-      markers: {
-        clusterer: false,
-      }
-  });
-  handler.buildMap({
-    internal: {id: 'map-canvas'}
-  },
-  function(){
-    var markers = handler.addMarkers(hash_json);
-    handler.bounds.extendWith(markers);
-    handler.fitMapToBounds();
-  }); 
-  */
+  var gtr_list = #{raw @gtr_list.to_json};
+  var avail;
+
+- unless @tr.nil?
+  javascript:
+    var avail = #{@tr.available};
+    var uuid = "#{@tr.uuid}";
+    var failed = #{@tr.failed};

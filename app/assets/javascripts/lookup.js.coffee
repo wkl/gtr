@@ -10,6 +10,7 @@ initialize = ->
 google.maps.event.addDomListener window, 'load', initialize
 ###
 
+###
 handler = Gmaps.build 'Google',
   markers:
     clusterer: false
@@ -22,6 +23,7 @@ handler.buildMap
     handler.addPolyline(hash_json)
     handler.bounds.extendWith(markers)
     handler.fitMapToBounds()
+###
 
 $ ->
   $('#paste-reset').click ->

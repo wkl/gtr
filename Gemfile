@@ -42,7 +42,7 @@ gem 'slim-rails'
 gem 'bootstrap-sass', '~> 3.1.1'
 
 gem 'geoip', '~> 1.4.0'
-gem 'gmaps4rails'
+# gem 'gmaps4rails'
 
 # GeoIP2 (without ASN)
 # gem 'geoip2', github: 'da4nik/geoip2'

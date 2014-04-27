@@ -14,7 +14,48 @@ class LookupController < ApplicationController
     end
   end
 
+  def check
+    #if !request.post?
+    #  render :json => {
+    #    :code => '-1',
+    #    :msg => 'method not allowed',
+    #  }
+    #end
+    @tr = Traceroute.find_by(uuid: params[:uuid])
+    if @tr.nil?
+      render :json => {
+        :code => '-1',
+        :msg => 'traceroute not found',
+      }
+      return
+    end
+
+    if @tr.failed?
+      render :json => {
+        :code => '-1',
+        :msg => 'traceroute failed, please check your destination',
+      }
+      return
+    end
+
+    if @tr.available?
+      render :json => {
+        :code => '1',
+        :msg => '',
+      }
+    else
+      render :json => {
+        :code => '0',
+        :msg => '',
+      }
+    end
+    return
+
+  end
+
   def index
+    @gtr_list = []
+
     if request.post? && params[:paste]
       @paste = params[:paste]
       @gtr_list = plain_to_list(@paste)
@@ -22,6 +63,7 @@ class LookupController < ApplicationController
         return @paste_msg = "bad traceroute format"
       end
 
+=begin
       @hash = Gmaps4rails.build_markers(@gtr_list) do |gtr, marker|
         marker.lat(gtr[:lat])
         marker.lng(gtr[:lng])
@@ -31,7 +73,7 @@ class LookupController < ApplicationController
           "height" => 34,
         })
       end
-
+=end
       return
     end
 
@@ -51,6 +93,10 @@ class LookupController < ApplicationController
 
     if params[:uuid]
       @tr = Traceroute.find_by(uuid: params[:uuid])
+
+      unless @tr.nil?
+        @gtr_list = @tr.to_list
+      end
       return
     end
 

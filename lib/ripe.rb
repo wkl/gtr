@@ -35,7 +35,7 @@ module Ripe
         count = 0
         ret_list = JSON.parse(resp.body)['objects']
         ret_list.each do |probe|
-          break if count >= 5 # only find 3 probes for each country
+          break if count >= 7 # find 7 probes for each country
           next if probe['status'] != 1 # get connected probe
 
           if probe.has_key?('location')
@@ -101,7 +101,6 @@ module Ripe
         },
       }
       resp = self.class.get("/measurement/#{msm_id}/result/", @options)
-      puts resp
       raise resp.body if resp.code != 200
 
       return JSON.parse(resp.body)

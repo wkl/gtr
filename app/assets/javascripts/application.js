@@ -16,6 +16,7 @@
 // Loads all Bootstrap javascripts
 //= require bootstrap
 //= require underscore
-//= require gmaps/google
+// require gmaps/google
+//= require traceroute
 //= require_tree .
 

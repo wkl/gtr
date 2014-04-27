@@ -1,5 +1,6 @@
 class Traceroute < ActiveRecord::Base
   include Ripe
+  include Ipv4
   has_many :hops, -> { order "no ASC" }, :dependent => :delete_all
 
   # after user post
@@ -59,5 +60,23 @@ class Traceroute < ActiveRecord::Base
   def mark_failed
     self.failed = true
     self.save
+  end
+
+  def to_list
+    # make the source(probe) itself the first point
+    gtr_list = Array.new
+
+    gtr_list = [gtr_fill(0, self.src, 0)] if self.available
+
+    self.hops.each do |hop|
+      begin
+        gtr_list << gtr_fill(hop.no, hop.from, hop.rtt)
+      rescue Exception => exc
+        puts exc.message
+        return []
+      end
+    end
+
+    return gtr_list
   end
 end

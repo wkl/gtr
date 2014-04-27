@@ -11,28 +11,61 @@ module Ipv4
     true if Float(str) rescue false
   end
 
+  def gtr_fill(id, ip, rtt)
+    raise "invalid number #{id}" unless is_number?(id)
+
+    unless valid_v4?(ip)
+      return {
+        :id => id,
+        :ip => '*',
+        :rtt => '',
+        :asn => '',
+        :as => '',
+        :cc => '',
+        :lat => 'n/a',
+        :lng => 'n/a',
+        :info => 'n/a',
+      }
+    end
+
+    geo = GEO.city(ip)  # geo will be nil if ip is private
+    asn = ASN.asn(ip)
+
+    ret = {
+      :id => id,
+      :ip => ip,
+      :rtt => rtt,
+      :asn => asn.nil? ? 'n/a' : asn.number,
+      :as => asn.nil? ? 'n/a' : asn.asn,
+      :cc => geo.nil? ? 'n/a' : geo.country_code2,
+      :lat => geo.nil? ? 'n/a' : geo.latitude,
+      :lng => geo.nil? ? 'n/a' : geo.longitude,
+      :info => '',
+    }
+    unless geo.nil?
+      ret[:info] = "<div>#{ret[:ip]}<br>City: #{geo.city_name}<br>
+      Region: #{geo.region_name}<br>Country: #{geo.country_name}<br>
+      #{ret[:asn]}: #{ret[:as]}
+      </div>"
+    end
+
+    return ret
+  end
+
   def plain_to_list(plain)
     gtr_list = Array.new
     plain.split("\n").each do |line|
-      id, ip = line.split[0..1]
-      next unless is_number?(id) && valid_v4?(ip)
+      id, ip, rtt = line.split[0..2]
+      next unless is_number?(id)
       begin
-        geo = GEO.city(ip)
-        asn = ASN.asn(ip)
-      rescue
+        gtr_list << gtr_fill(id, ip, rtt)
+      rescue Exception => exc
+        puts exc.message
         return []
       end
-      gtr_list << {
-        :id => id,
-        :ip => ip,
-        :asn => asn.nil? ? 'n/a' : asn.number,
-        :as => asn.nil? ? 'n/a' : asn.asn,
-        :cc => geo.country_code2,
-        :lat => geo.latitude,
-        :lng => geo.longitude,
-      }
     end
-    gtr_list
+
+    return gtr_list
   end
 end
 
