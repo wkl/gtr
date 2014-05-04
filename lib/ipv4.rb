@@ -47,7 +47,7 @@ module Ipv4
       :info => '',
     }
     unless geo.nil?
-      ret[:info] = "<div>#{ret[:ip]}<br>City: #{geo.city_name}<br>
+      ret[:info] = "<div><strong>#{ret[:ip]}</strong><br>City: #{geo.city_name}<br>
       Region: #{geo.region_name}<br>Country: #{geo.country_name}<br>
       #{ret[:asn]}: #{ret[:as]}
       </div>"
@@ -70,6 +70,23 @@ module Ipv4
     end
 
     return gtr_list
+  end
+
+  def strip_by_as(gtr_list)
+    new_list = Array.new
+
+    last_asn = ''
+    gtr_list.each do |hop|
+      asn = hop[:asn]
+      if asn.start_with?('AS') && asn != last_asn
+        new_list << hop.clone
+      elsif !asn.start_with?('AS')
+        new_list << hop.clone
+      end
+      last_asn = asn
+    end
+
+    return new_list
   end
 
   def skipfy(gtr_list)

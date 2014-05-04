@@ -56,14 +56,17 @@ class LookupController < ApplicationController
   def index
     @gtr_list = []
     @gtr_list_skip = []
+    @gtr_list_as = []
 
     if request.post? && params[:paste]
       @paste = params[:paste]
       @gtr_list = plain_to_list(@paste)
       if @gtr_list.empty?
-        return @paste_msg = "bad traceroute format"
+        @paste_msg = "bad traceroute format"
+        return
       end
-      @gtr_lis_skip = skipfy(@gtr_list)
+      @gtr_list_skip = skipfy(@gtr_list)
+      @gtr_list_as = strip_by_as(@gtr_list)
 
 =begin
       @hash = Gmaps4rails.build_markers(@gtr_list) do |gtr, marker|
@@ -100,6 +103,7 @@ class LookupController < ApplicationController
         @gtr_list = @tr.to_list
         if (@gtr_list.length > 0)
           @gtr_list_skip = skipfy(@gtr_list)
+          @gtr_list_as = strip_by_as(@gtr_list)
         end
       end
       return

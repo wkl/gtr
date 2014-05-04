@@ -283,3 +283,14 @@ function initialize() {
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
+
+// page
+$('.ip-pop').popover({html:true,});
+
+$('.ip-pop').hover(
+    function() {
+      $(this).popover('show');
+    }, function() {
+      $(this).popover('hide');
+    }
+);

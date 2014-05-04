@@ -48,18 +48,40 @@ div class="row"
               | Dst: #{@tr.dst} (#{@tr.dst_addr})
 
         div id="load" style="display: none"
-          = image_tag('spinner.gif', id: "loading")
+          = image_tag('spinner.gif', size: '25', id: "loading")
           
     - if !@gtr_list.nil? && @gtr_list.any?
-      div
-        table class="table table-condensed table-hover"
-          - for gtr in @gtr_list
-            tr
-              td = gtr[:id]
-              td = gtr[:ip]
-              td = gtr[:cc]
-              td = gtr[:asn]
-              td = gtr[:rtt]
+      ul id="tab-head" class="nav nav-pills"
+        li class="active"
+          a href="#org-tab" data-toggle="pill" Original
+        li
+          a href="#asn-tab" data-toggle="pill" AS only
+
+      div class="tab-content"
+        div id="org-tab" class="tab-pane fade in active"
+          table class="table table-condensed table-hover"
+            - for gtr in @gtr_list
+              tr
+                td = gtr[:id]
+                td
+                  a class="ip-pop" data-container="body" data-toggle="popover" data-placement="left" data-content="#{gtr[:info]}"
+                    = gtr[:ip]
+                td = gtr[:cc]
+                td = gtr[:asn]
+                td = gtr[:rtt]
+        div id="asn-tab" class="tab-pane fade"
+          table class="table table-condensed table-hover"
+            - for gtr in @gtr_list_as
+              tr
+                td = gtr[:id]
+                - if gtr[:asn].start_with?('AS')
+                  td = gtr[:asn]
+                  td = gtr[:cc]
+                  td = gtr[:as]
+                - else
+                  td = gtr[:ip]
+                  td = gtr[:cc]
+                  td
 
 - unless @alert_msg.nil?
   javascript:
