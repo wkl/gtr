@@ -61,10 +61,14 @@ div class="row"
         div id="org-tab" class="tab-pane fade in active"
           table class="table table-condensed table-hover"
             - for gtr in @gtr_list
-              tr
-                td = gtr[:id]
+              tr class=[("has-marker" unless gtr[:lat] == 'n/a')] data="#{gtr[:id]}"
                 td
-                  a class="ip-pop" data-container="body" data-toggle="popover" data-placement="left" data-content="#{gtr[:info]}"
+                  = gtr[:id]
+                td
+                  - if gtr[:info] != 'n/a'
+                    a class="ip-pop" data-container="body" data-toggle="popover" data-placement="left" data-content="#{gtr[:info]}"
+                      = gtr[:ip]
+                  - else
                     = gtr[:ip]
                 td = gtr[:cc]
                 td = gtr[:asn]

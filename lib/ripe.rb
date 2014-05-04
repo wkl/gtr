@@ -35,7 +35,7 @@ module Ripe
         count = 0
         ret_list = JSON.parse(resp.body)['objects']
         ret_list.each do |probe|
-          break if count >= 7 # find 7 probes for each country
+          break if count >= PROBES_PER_CC # find several probes for each country
           next if probe['status'] != 1 # get connected probe
 
           if probe.has_key?('location')

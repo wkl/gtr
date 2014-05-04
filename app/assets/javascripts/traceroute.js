@@ -44,6 +44,7 @@ function sameLoc(hop1, hop2) {
 var map;
 var lines = [];
 var markers = [];
+var infoWindows = [];
 var lineSymbol = {
   path: 'M 0,-0.5 0,0.5',
   strokeOpacity: 1,
@@ -55,6 +56,7 @@ var dash = [{
     offset: '100%',
     repeat: '10px'
 }]
+var zindexMax = google.maps.Marker.MAX_ZINDEX;
 
 var colorMode = 0;
 var skipMode = 0;
@@ -84,6 +86,18 @@ function ColorControl(controlDiv, map) {
   // Setup the click event listeners
   google.maps.event.addDomListener(controlUI, 'click', function() {
     colorMode = (colorMode + 1) % 3;
+    switch (colorMode) {
+      case 0:
+        h = '<b>Default Color</b>'
+        break;
+      case 1:
+        h = '<b>Relative RTT</b>'
+        break;
+      case 2:
+        h = '<b>Absolute RTT</b>'
+        break;
+    }
+    $(this).html(h);
     drawAll(colorMode, false);
   });
 }
@@ -108,27 +122,36 @@ function SkipControl(controlDiv, map) {
   controlText.style.fontSize = '12px';
   controlText.style.paddingLeft = '4px';
   controlText.style.paddingRight = '4px';
-  controlText.innerHTML = '<b>ToggleSkip</b>';
+  controlText.innerHTML = '<b>Hide Inaccurate</b>';
   controlUI.appendChild(controlText);
 
   // Setup the click event listeners
   google.maps.event.addDomListener(controlUI, 'click', function() {
     skipMode = 1 - skipMode;
-    if (skipMode == 1)
+    if (skipMode == 1) {
+      $(this).html('<b>Show Inaccurate</b>')
       gtr_list = gtr_list_skip;
-    else
+    } else {
       gtr_list = gtr_list_org;
+      $(this).html('<b>Hide Inaccurate</b>')
+    }
     drawAll(colorMode, true);
   });
 }
 
-function drawMarker(hop) {
+function closeAllInfoWindows(infowindow) {
+    for (var i = 0; i < infoWindows.length; i++)
+      infoWindows[i].close();
+    infoWindows = [infowindow,]
+}
+
+function drawMarker(hop, openInfo) {
   var image = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + hop.id + "|FE6256|000000"
   var hopLatLng = new google.maps.LatLng(hop.lat, hop.lng);
   var marker = new google.maps.Marker({
       position: hopLatLng,
       map: map,
-      icon: image
+      icon: image,
   });
   markers.push(marker);
 
@@ -138,8 +161,16 @@ function drawMarker(hop) {
     content: contentString
   });
   google.maps.event.addListener(marker, 'click', function() {
+    marker.setZIndex(++zindexMax);
+    closeAllInfoWindows(infowindow);
     infowindow.open(map,marker);
   });
+
+  if (openInfo == true) {
+    marker.setZIndex(++zindexMax);
+    closeAllInfoWindows(infowindow);
+    infowindow.open(map,marker);
+  }
 }
 
 function drawLine(hop1, hop2, colorMode, gap) {
@@ -220,7 +251,7 @@ function drawAll(colorMode, removeMarker) {
   for (i = 0; i < gtr_list.length; i++) {
     if (gtr_list[i].lat != 'n/a') {
       last = gtr_list[i];
-      drawMarker(last);
+      drawMarker(last, false);
       i++;
       break;
     }
@@ -243,7 +274,7 @@ function drawAll(colorMode, removeMarker) {
 
     drawLine(last, curr, colorMode, gap);
     if (!sameLoc(last, curr))
-      drawMarker(curr);
+      drawMarker(curr, false);
 
     last = curr;
     i++;
@@ -252,7 +283,7 @@ function drawAll(colorMode, removeMarker) {
 
 function initialize() {
   var mapOptions = {
-    zoom: 3,
+    zoom: 2,
     center: new google.maps.LatLng(0, -180),
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
@@ -267,7 +298,8 @@ function initialize() {
     if (hop.ip != '*' && hop.lat != 'n/a')
       allPath.push(new google.maps.LatLng(hop.lat, hop.lng));
   });
-  fitBounds(map, allPath);
+  if (allPath.length > 0)
+    fitBounds(map, allPath);
 
   var colorControlDiv = document.createElement('div');
   var colorControl = new ColorControl(colorControlDiv, map);
@@ -294,3 +326,10 @@ $('.ip-pop').hover(
       $(this).popover('hide');
     }
 );
+
+$('.has-marker').click(function(event) {
+  event.preventDefault();
+  $('html, body').animate({ scrollTop: 0 }, 'fast');
+  hopID = parseInt($(this).attr('data'));
+  drawMarker(gtr_list_org[hopID], true);
+});

@@ -44,7 +44,7 @@ module Ipv4
       :lng => geo.nil? ? 'n/a' : geo.longitude,
       :city => geo.nil? ? 'n/a' : geo.city_name,
       :region => geo.nil? ? 'n/a' : geo.region_name,
-      :info => '',
+      :info => 'n/a',
     }
     unless geo.nil?
       ret[:info] = "<div><strong>#{ret[:ip]}</strong><br>City: #{geo.city_name}<br>
