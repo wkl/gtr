@@ -68,7 +68,7 @@ function ColorControl(controlDiv, map) {
   var controlUI = document.createElement('div');
   controlUI.style.backgroundColor = 'white';
   controlUI.style.borderStyle = 'solid';
-  controlUI.style.borderWidth = '2px';
+  controlUI.style.borderWidth = '1px';
   controlUI.style.cursor = 'pointer';
   controlUI.style.textAlign = 'center';
   controlUI.title = 'Click to toggle color mode';
@@ -110,7 +110,7 @@ function SkipControl(controlDiv, map) {
   var controlUI = document.createElement('div');
   controlUI.style.backgroundColor = 'white';
   controlUI.style.borderStyle = 'solid';
-  controlUI.style.borderWidth = '2px';
+  controlUI.style.borderWidth = '1px';
   controlUI.style.cursor = 'pointer';
   controlUI.style.textAlign = 'center';
   controlUI.title = 'Click to skip inaccurate hops';

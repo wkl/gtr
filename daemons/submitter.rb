@@ -3,7 +3,7 @@ loop {
   begin
 
     Traceroute.where(:submitted => false, :failed => false).each do |tr|
-      puts "processing #{tr.uuid}..."
+      puts "submitting #{tr.uuid}..."
 
       # if too old (>10 min), marked failed
       if Time.now - tr.created_at > 600
